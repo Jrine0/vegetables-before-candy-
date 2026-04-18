@@ -1,0 +1,18 @@
+{
+  "name": "future-me-aptos-move",
+  "version": "1.0.0",
+  "description": "Aptos Move smart contracts for future me",
+  "scripts": {
+    "aptos:init": "aptos init --network testnet",
+    "compile": "aptos move compile --named-addresses future_me=0x0",
+    "test": "aptos move test --named-addresses future_me=0x0",
+    "publish:testnet": "aptos move publish --named-addresses future_me=default --profile default",
+    "publish:mainnet": "aptos move publish --named-addresses future_me=default --profile default --assume-yes"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4"
+  }
+}

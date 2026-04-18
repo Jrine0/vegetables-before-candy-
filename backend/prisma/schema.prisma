@@ -1,0 +1,327 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  universityEmail   String   @unique
+  firstName         String
+  lastName          String
+  university        String
+  studentId         String?
+  walletAddress     String?
+  emailVerified     Boolean  @default(false)
+  emailVerificationToken String?
+  role              String   @default("student") // "student", "admin", "university"
+  lastLoginAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  achievements      Achievement[]
+  nftTokens         NFTToken[]
+  accessGrants      AccessGrant[]
+  opportunityApplications OpportunityApplication[]
+  
+  // Social features
+  socialProfile     SocialProfile?
+  posts             SocialPost[]
+  likes             SocialLike[]
+  endorsements      Endorsement[]
+  endorsementsReceived Endorsement[] @relation("EndorsementReceiver")
+  
+  @@map("users")
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  userId      String
+  type        String   // "gpa", "research", "leadership"
+  title       String
+  description String
+  gpaValue    Float?
+  proofUrl    String?  // URL to uploaded proof document
+  verified    Boolean  @default(false)
+  verifiedBy  String?  // Admin who verified
+  verifiedAt  DateTime?
+  verificationStatus String @default("pending") // "pending", "approved", "rejected"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nftTokens   NFTToken[]
+  
+  @@map("achievements")
+}
+
+model NFTToken {
+  id            String   @id @default(uuid())
+  userId        String
+  achievementId String
+  tokenId       String
+  contractAddress String
+  blockchain    String   // "aptos"
+  nftType       String   // "gpa_guardian", "research_rockstar", "leadership_legend"
+  metadataUri   String
+  minted        Boolean  @default(false)
+  mintedAt      DateTime?
+  level         Int      @default(1)    // NFT evolution level (1-5)
+  rarity        String   @default("common") // "common", "rare", "epic", "legendary", "mythic"
+  stackedAchievements String? // Array of achievement IDs that contribute to this NFT (JSON string)
+  evolutionPoints Int    @default(0)    // Points toward next evolution
+  isComposite   Boolean  @default(false) // True if made from multiple achievements
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  accessGrants  AccessGrant[]
+  
+  @@map("nft_tokens")
+}
+
+model Company {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  industry      String
+  size          String   // "startup", "small", "medium", "large", "enterprise"
+  website       String?
+  logoUrl       String?
+  description   String
+  isVerified    Boolean  @default(false)
+  contactEmail  String
+  tier          String   @default("standard") // "standard", "premium", "enterprise"
+  creditsBalance Int     @default(10) // Credits for posting opportunities
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  opportunities Opportunity[]
+  recruiters    String?  // JSON array of recruiter user IDs
+  
+  @@map("companies")
+}
+
+model Opportunity {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  type        String   // "internship", "job", "research", "mentorship", "event", "scholarship"
+  category    String   // "digital" or "physical"
+  requiredNFTs String  // JSON array of required NFT types
+  minLevel    Int      @default(1) // Minimum NFT level required
+  minRarity   String   @default("common") // Minimum rarity required
+  
+  // Company information
+  companyId   String?
+  company     Company? @relation(fields: [companyId], references: [id])
+  postedBy    String   // User ID of poster
+  
+  // Opportunity details
+  salary      String?  // Salary range
+  location    String?
+  remote      Boolean  @default(false)
+  url         String?
+  
+  // Timing
+  startDate   DateTime?
+  endDate     DateTime?
+  applicationDeadline DateTime?
+  
+  // Limits
+  maxParticipants Int?
+  currentParticipants Int @default(0)
+  
+  // Engagement metrics
+  views       Int      @default(0)
+  applications Int     @default(0)
+  
+  // Status
+  status      String   @default("active") // "active", "paused", "closed", "draft"
+  featured    Boolean  @default(false)
+  urgent      Boolean  @default(false)
+  
+  // Pricing
+  cost        Int      @default(1) // Credits required to post
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  accessGrants AccessGrant[]
+  opportunityApplications OpportunityApplication[]
+  
+  @@map("opportunities")
+}
+
+model OpportunityApplication {
+  id            String   @id @default(uuid())
+  userId        String
+  opportunityId String
+  status        String   @default("pending") // "pending", "approved", "rejected", "interview"
+  appliedAt     DateTime @default(now())
+  message       String?  // Cover letter / application message
+  resume        String?  // Resume file path
+  
+  user          User        @relation(fields: [userId], references: [id])
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+  
+  @@unique([userId, opportunityId])
+  @@map("opportunity_applications")
+}
+
+model AccessGrant {
+  id            String   @id @default(uuid())
+  userId        String
+  opportunityId String
+  nftTokenId    String
+  grantedAt     DateTime @default(now())
+  usedAt        DateTime?
+  expiresAt     DateTime?
+  
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  nftToken      NFTToken    @relation(fields: [nftTokenId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, opportunityId])
+  @@map("access_grants")
+}
+
+model University {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  emailDomain   String   @unique
+  adminEmail    String
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@map("universities")
+}
+
+model SocialProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  displayName     String
+  bio             String?
+  avatarUrl       String?
+  linkedinUrl     String?
+  githubUrl       String?
+  portfolioUrl    String?
+  isPublic        Boolean  @default(true)
+  showNFTs        Boolean  @default(true)
+  showAchievements Boolean @default(true)
+  
+  // Gamification stats
+  totalPoints     Int      @default(0)
+  level           Int      @default(1)
+  streak          Int      @default(0)  // Achievement submission streak
+  badges          String?    // Array of earned badges (JSON string)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("social_profiles")
+}
+
+model SocialPost {
+  id            String   @id @default(uuid())
+  userId        String
+  type          String   // "achievement", "nft_mint", "evolution", "opportunity_success"
+  title         String
+  content       String
+  imageUrl      String?
+  achievementId String?
+  nftId         String?
+  isPublic      Boolean  @default(true)
+  isPinned      Boolean  @default(false)
+  
+  // Engagement
+  likes         Int      @default(0)
+  views         Int      @default(0)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  socialLikes   SocialLike[]
+  
+  @@map("social_posts")
+}
+
+model SocialLike {
+  id      String @id @default(uuid())
+  userId  String
+  postId  String
+  
+  createdAt DateTime @default(now())
+  
+  user    User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post    SocialPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, postId])
+  @@map("social_likes")
+}
+
+model Endorsement {
+  id            String   @id @default(uuid())
+  endorserId    String   // Who gave the endorsement
+  endorseeId    String   // Who received the endorsement
+  achievementId String?  // Which achievement is being endorsed
+  type          String   // "skill", "achievement", "leadership", "teamwork", etc.
+  message       String
+  isPublic      Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  
+  endorser      User     @relation(fields: [endorserId], references: [id], onDelete: Cascade)
+  endorsee      User     @relation("EndorsementReceiver", fields: [endorseeId], references: [id], onDelete: Cascade)
+  
+  @@unique([endorserId, endorseeId, achievementId])
+  @@map("endorsements")
+}
+
+model Leaderboard {
+  id            String   @id @default(uuid())
+  type          String   // "global", "university", "monthly", "weekly"
+  category      String   // "gpa", "research", "leadership", "overall"
+  userId        String
+  rank          Int
+  score         Float
+  period        String   // "2024-01", "2024-W01", etc.
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([type, category, period, userId])
+  @@map("leaderboards")
+}
+
+model Badge {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String
+  iconUrl     String
+  rarity      String   @default("common") // "common", "rare", "epic", "legendary"
+  condition   String   // Condition to earn this badge (JSON string)
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  
+  @@map("badges")
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+  
+  @@unique([userId, badgeId])
+  @@map("user_badges")
+}
