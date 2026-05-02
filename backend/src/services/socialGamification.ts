@@ -50,22 +50,18 @@ export class SocialGamificationService {
       data: {
         userId,
         displayName: `${user.firstName} ${user.lastName}`,
-        bio: `${user.university} student passionate about academic excellence`,
-        totalPoints: 0,
-        level: 1,
-        streak: 0
-      }
-    });
+            bio: `${user.university} student focused on completing goals and earning rewards`,
+            totalPoints: 0,
+            level: 1,
+            streak: 0
+          }
+        });
 
-    // Create welcome post
-    await this.createSocialPost(userId, {
-      type: 'welcome',
-      title: '🎉 Welcome to future me!',
-      content: `Just joined the platform to showcase my academic achievements and unlock exclusive opportunities!`,
-      isPublic: true
-    });
-
-    return socialProfile;
+        // Create welcome post
+        await this.createSocialPost(userId, {
+          type: 'welcome',
+          title: '🎉 Welcome to vegetables-before-candy!',
+          content: `Just joined the platform to complete tasks, verify progress, and claim rewards!`,
   }
 
   // Create social post for achievements

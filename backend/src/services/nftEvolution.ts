@@ -203,21 +203,8 @@ export class NFTEvolutionService {
       }
     });
 
-    // Create the composite NFT
-    const compositeNFT = await prisma.nFTToken.create({
-      data: {
-        userId,
-        achievementId: compositeAchievement.id,
-        tokenId: `composite_${Date.now()}_${userId}`,
-        contractAddress: process.env.APTOS_MODULE_ADDRESS || process.env.APTOS_RESOURCE_ACCOUNT || 'aptos_move_module',
-        blockchain: 'aptos',
-        nftType: stackingRule.resultType,
-        metadataUri: `${process.env.API_URL}/api/nfts/metadata/${compositeAchievement.id}`,
-        level: 3, // Start composite NFTs at level 3
-        rarity: stackingRule.rarity,
-        evolutionPoints: stackingRule.bonusPoints,
-        isComposite: true,
-        stackedAchievements: JSON.stringify(sourceNFTs.map(nft => nft.achievementId)),
+    // Note: NFT evolution not applicable in task-based system
+    // This service is deprecated - tasks replace NFT evolution logic
         minted: false // Will be minted by user
       }
     });

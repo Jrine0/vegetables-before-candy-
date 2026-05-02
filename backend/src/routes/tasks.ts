@@ -1,103 +1,202 @@
 import express from 'express';
 import { prisma } from '../server';
 import { authenticateToken } from '../middleware/auth';
-import { nftEvolutionService } from '../services/nftEvolution';
-import { aptosChainService } from '../services/aptosChain';
+import { sorobanChainService } from '../services/sorobanChain';
 
 const router = express.Router();
 
+// Get user's tasks
 router.get('/', authenticateToken, async (req: any, res) => {
   try {
-    const nfts = await prisma.nFTToken.findMany({
+    const tasks = await prisma.task.findMany({
       where: { userId: req.userId },
-      include: {
-        achievement: true
-      },
       orderBy: { createdAt: 'desc' }
     });
 
-    res.json(nfts);
+    res.json(tasks);
   } catch (error) {
-    console.error('Get NFTs error:', error);
-    res.status(500).json({ error: 'Failed to get NFTs' });
+    console.error('Get tasks error:', error);
+    res.status(500).json({ error: 'Failed to get tasks' });
   }
 });
 
-router.post('/:id/mint', authenticateToken, async (req: any, res) => {
+// Create a new task
+router.post('/', authenticateToken, async (req: any, res) => {
   try {
-    const { id } = req.params;
-    const { walletAddress } = req.body;
+    const { description, rewardAmount, walletAddress } = req.body;
 
-    const nft = await prisma.nFTToken.findFirst({
-      where: { id, userId: req.userId }
-    });
-
-    if (!nft) {
-      return res.status(404).json({ error: 'NFT not found' });
+    if (!description || !rewardAmount || !walletAddress) {
+      return res.status(400).json({ error: 'Description, reward amount, and wallet address are required' });
     }
 
-    if (nft.minted) {
-      return res.status(400).json({ error: 'NFT already minted' });
-    }
-
-    if (!walletAddress) {
-      return res.status(400).json({ error: 'Aptos wallet address is required' });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: req.userId },
-      select: { university: true }
-    });
-
-    const minted = await aptosChainService.mintSoulboundAchievementNFT({
-      recipientAddress: walletAddress,
-      achievementType: nft.nftType,
-      achievementId: nft.achievementId,
-      metadataUri: `${process.env.API_URL}/api/nfts/metadata/${nft.achievementId}`,
-      university: user?.university || 'unknown',
-    });
-
-    const updatedNFT = await prisma.nFTToken.update({
-      where: { id },
+    // Create task in database
+    const task = await prisma.task.create({
       data: {
-        tokenId: minted.tokenId,
-        blockchain: 'aptos',
-        contractAddress: process.env.APTOS_MODULE_ADDRESS || process.env.APTOS_RESOURCE_ACCOUNT || 'aptos_move_module',
-        minted: true,
-        mintedAt: new Date()
+        userId: req.userId,
+        description,
+        rewardAmount: parseInt(rewardAmount),
+        status: 'created',
+        walletAddress,
       }
     });
 
-    // Update user's wallet address if provided
-    if (walletAddress) {
-      await prisma.user.update({
-        where: { id: req.userId },
-        data: { walletAddress }
-      });
-    }
+    // Create task on-chain
+    const chainResult = await sorobanChainService.createTask({
+      userAddress: walletAddress,
+      description,
+      rewardAmount: rewardAmount.toString(),
+    });
+
+    // Update task with chain data
+    const updatedTask = await prisma.task.update({
+      where: { id: task.id },
+      data: {
+        taskId: chainResult.taskId,
+        txHash: chainResult.txHash,
+      }
+    });
 
     res.json({
-      ...updatedNFT,
-      txHash: minted.txHash,
-      explorerUrl: aptosChainService.getExplorerTxnUrl(minted.txHash),
+      ...updatedTask,
+      explorerUrl: sorobanChainService.getExplorerTxnUrl(chainResult.txHash),
     });
   } catch (error) {
-    console.error('Mint NFT error:', error);
-    res.status(500).json({ error: 'Failed to mint NFT' });
+    console.error('Create task error:', error);
+    res.status(500).json({ error: 'Failed to create task' });
   }
 });
 
-router.get('/metadata/:achievementId', async (req, res) => {
+// Submit task completion
+router.post('/:id/submit', authenticateToken, async (req: any, res) => {
   try {
-    const { achievementId } = req.params;
-    const { level } = req.query;
+    const { id } = req.params;
 
-    const metadata = await nftEvolutionService.generateDynamicMetadata(
-      achievementId,
-      level ? parseInt(level as string) : 1
+    const task = await prisma.task.findFirst({
+      where: { id, userId: req.userId }
+    });
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    if (task.status !== 'created') {
+      return res.status(400).json({ error: 'Task not in created status' });
+    }
+
+    // Submit completion on-chain
+    const chainResult = await sorobanChainService.submitTaskCompletion(
+      task.walletAddress,
+      task.taskId
     );
 
-    res.json(metadata);
+    // Update task status
+    const updatedTask = await prisma.task.update({
+      where: { id },
+      data: {
+        status: 'submitted',
+        submittedAt: new Date(),
+      }
+    });
+
+    res.json({
+      ...updatedTask,
+      txHash: chainResult.txHash,
+      explorerUrl: sorobanChainService.getExplorerTxnUrl(chainResult.txHash),
+    });
+  } catch (error) {
+    console.error('Submit task error:', error);
+    res.status(500).json({ error: 'Failed to submit task' });
+  }
+});
+
+// Verify task (admin/oracle only)
+router.post('/:id/verify', authenticateToken, async (req: any, res) => {
+  try {
+    // TODO: Check if user is admin/oracle
+    const { id } = req.params;
+
+    const task = await prisma.task.findUnique({
+      where: { id }
+    });
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    if (task.status !== 'submitted') {
+      return res.status(400).json({ error: 'Task not submitted' });
+    }
+
+    // Verify on-chain
+    const chainResult = await sorobanChainService.verifyTask(
+      task.walletAddress,
+      task.taskId
+    );
+
+    // Update task status
+    const updatedTask = await prisma.task.update({
+      where: { id },
+      data: {
+        status: 'verified',
+        verifiedAt: new Date(),
+      }
+    });
+
+    res.json({
+      ...updatedTask,
+      txHash: chainResult.txHash,
+      explorerUrl: sorobanChainService.getExplorerTxnUrl(chainResult.txHash),
+    });
+  } catch (error) {
+    console.error('Verify task error:', error);
+    res.status(500).json({ error: 'Failed to verify task' });
+  }
+});
+
+// Claim reward
+router.post('/:id/claim', authenticateToken, async (req: any, res) => {
+  try {
+    const { id } = req.params;
+
+    const task = await prisma.task.findFirst({
+      where: { id, userId: req.userId }
+    });
+
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found' });
+    }
+
+    if (task.status !== 'verified') {
+      return res.status(400).json({ error: 'Task not verified' });
+    }
+
+    // Claim reward on-chain
+    const chainResult = await sorobanChainService.claimReward(
+      task.walletAddress,
+      task.taskId
+    );
+
+    // Update task status
+    const updatedTask = await prisma.task.update({
+      where: { id },
+      data: {
+        status: 'claimed',
+        claimedAt: new Date(),
+      }
+    });
+
+    res.json({
+      ...updatedTask,
+      txHash: chainResult.txHash,
+      explorerUrl: sorobanChainService.getExplorerTxnUrl(chainResult.txHash),
+    });
+  } catch (error) {
+    console.error('Claim reward error:', error);
+    res.status(500).json({ error: 'Failed to claim reward' });
+  }
+});
+
+export default router;
   } catch (error) {
     console.error('Get NFT metadata error:', error);
     res.status(500).json({ error: 'Failed to get NFT metadata' });

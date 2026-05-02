@@ -1,9 +1,0 @@
-[package]
-name = "future_me"
-version = "1.0.0"
-
-[addresses]
-future_me = "0x0"
-
-[dependencies]
-AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "aptos-node-v1.9.0" }

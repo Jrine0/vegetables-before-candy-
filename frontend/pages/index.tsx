@@ -6,56 +6,56 @@ import { AcademicCapIcon, TrophyIcon, UserGroupIcon, LockClosedIcon, StarIcon, S
 
 const features = [
   {
-    name: 'Academic Achievement NFTs',
-    description: 'Transform your academic accomplishments into unique, verifiable digital assets that showcase your expertise.',
+    name: 'Task Reward Automation',
+    description: 'Submit completed tasks, prove achievement, and earn Stellar Soroban rewards automatically.',
     icon: AcademicCapIcon,
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
   },
   {
-    name: 'Exclusive Opportunities',
-    description: 'Unlock premium research databases, internship fast-tracks, and mentorship programs with your achievement NFTs.',
+    name: 'Instant Reward Vault',
+    description: 'Claim verified rewards through secure Stellar transactions powered by Soroban.',
     icon: TrophyIcon,
     color: 'text-green-600',
     bgColor: 'bg-green-100',
   },
   {
-    name: 'Cross-University Network',
-    description: 'Connect with students from supported universities and access opportunities across multiple institutions.',
+    name: 'Cross-Channel Collaboration',
+    description: 'Work with peers, mentors, and teams across institutions through task-based incentives.',
     icon: UserGroupIcon,
     color: 'text-purple-600',
     bgColor: 'bg-purple-100',
   },
   {
-    name: 'Gated Access System',
-    description: 'Secure, blockchain-verified access to exclusive events, resources, and premium educational content.',
+    name: 'Secure Reward Access',
+    description: 'Enable verified access to outcomes, challenges, and payout approvals with Stellar wallet security.',
     icon: LockClosedIcon,
     color: 'text-indigo-600',
     bgColor: 'bg-indigo-100',
   },
 ];
 
-const nftTypes = [
+const rewardTiers = [
   {
-    name: 'GPA Guardian NFT',
-    requirement: '3.5+ GPA verification',
-    unlocks: 'Premium research databases, honor society events',
+    name: 'Completion Champion',
+    requirement: 'Submit a verified task milestone',
+    unlocks: 'Instant Stellar reward claim, badge recognition, and leaderboard boost',
     gradient: 'from-blue-500 to-blue-600',
-    icon: '🎓',
+    icon: '🎯',
   },
   {
-    name: 'Research Rockstar NFT',
-    requirement: 'Published paper/research project',
-    unlocks: 'Exclusive internship pools, graduate school fast-track',
+    name: 'Collaboration Catalyst',
+    requirement: 'Lead a team task or mentor a peer project',
+    unlocks: 'Bonus reward multipliers and community recognition',
     gradient: 'from-green-500 to-green-600',
-    icon: '🔬',
+    icon: '🤝',
   },
   {
-    name: 'Leadership Legend NFT',
-    requirement: 'Student government/club leadership proof',
-    unlocks: 'Startup pitch events, executive mentorship programs',
+    name: 'Impact Innovator',
+    requirement: 'Deliver a high-impact project or verified challenge result',
+    unlocks: 'Premium access, priority rewards, and featured showcase',
     gradient: 'from-purple-500 to-purple-600',
-    icon: '👑',
+    icon: '🚀',
   },
 ];
 
@@ -68,9 +68,9 @@ const partners = [
 ];
 
 const stats = [
-  { label: 'Students Verified', value: 12547, icon: '👨‍🎓' },
-  { label: 'NFTs Minted', value: 8923, icon: '🎨' },
-  { label: 'Universities', value: 25, icon: '🏛️' },
+  { label: 'Tasks Verified', value: 12547, icon: '✅' },
+  { label: 'Rewards Claimed', value: 8923, icon: '🎯' },
+  { label: 'Teams Supported', value: 25, icon: '🤝' },
   { label: 'Success Stories', value: 1847, icon: '⭐' },
 ];
 
@@ -199,7 +199,7 @@ const HomePage: React.FC = () => {
                 transition={{ duration: 0.6 }}
               >
                 <SparklesIcon className="w-4 h-4 mr-2 text-yellow-400" />
-                🏆 Aptos-first Academic Achievement Platform
+                🏆 Stellar-first Task Reward Platform
               </motion.div>
 
               <motion.h1 
@@ -208,7 +208,7 @@ const HomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
               >
-                Transform Your{' '}
+                Transform Every{' '}
                 <motion.span
                   className="bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent"
                   animate={{
@@ -223,7 +223,7 @@ const HomePage: React.FC = () => {
                     backgroundSize: '200% 200%',
                   }}
                 >
-                  Academic Achievements
+                  Task Reward Journey
                 </motion.span>
               </motion.h1>
 
@@ -233,9 +233,9 @@ const HomePage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                The first cross-university platform where academic achievements become{' '}
-                <span className="text-purple-400 font-semibold">dynamic NFTs</span> that unlock 
-                exclusive opportunities across partner institutions.
+                The first cross-platform reward system where completed tasks become{' '}
+                <span className="text-purple-400 font-semibold">Stellar Soroban rewards</span> that unlock 
+                verified payout access and incentives.
               </motion.p>
 
               <motion.div 
@@ -330,11 +330,11 @@ const HomePage: React.FC = () => {
                         >
                           🎓
                         </motion.div>
-                        <h3 className="text-3xl font-bold mb-2">Academic Excellence</h3>
-                        <p className="text-lg opacity-90">Verified on Blockchain</p>
+                        <h3 className="text-3xl font-bold mb-2">Reward Readiness</h3>
+                        <p className="text-lg opacity-90">Verified with Stellar Soroban</p>
                       </motion.div>
                       
-                      {/* Floating particles around the NFT */}
+                      {/* Floating particles around the reward badge */}
                       {[...Array(8)].map((_, i) => (
                         <motion.div
                           key={i}
@@ -401,7 +401,7 @@ const HomePage: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              Transform your academic journey with blockchain-verified achievements and unlock exclusive opportunities.
+              Transform your task progress into reward-ready verifications on Stellar Soroban.
             </motion.p>
           </motion.div>
 
@@ -456,7 +456,7 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* NFT Types Section */}
+      {/* Reward Tiers Section */}
       <div className="bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 py-24 relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden">
@@ -487,7 +487,7 @@ const HomePage: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              Achievement NFT Types
+              Reward Tiers for Verified Tasks
             </motion.h2>
             <motion.p 
               className="text-xl text-gray-600 max-w-3xl mx-auto"
@@ -496,14 +496,14 @@ const HomePage: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              Three main NFT categories to showcase your academic excellence and unlock exclusive opportunities
+              Three proven reward tiers designed to amplify verified task completion and team impact.
             </motion.p>
           </motion.div>
 
           <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
-            {nftTypes.map((nft, index) => (
+            {rewardTiers.map((tier, index) => (
               <motion.div
-                key={nft.name}
+                key={tier.name}
                 className="group relative"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -515,7 +515,7 @@ const HomePage: React.FC = () => {
                 <div className="relative bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/50 h-full">
                   {/* Animated glow effect */}
                   <motion.div
-                    className={`absolute -inset-0.5 bg-gradient-to-r ${nft.gradient} rounded-3xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-500`}
+                    className={`absolute -inset-0.5 bg-gradient-to-r ${tier.gradient} rounded-3xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-500`}
                     animate={{
                       rotate: [0, 360],
                     }}
@@ -527,7 +527,7 @@ const HomePage: React.FC = () => {
                   />
                   
                   <div className="relative z-10">
-                    {/* NFT Icon with 3D effect */}
+                    {/* Reward icon with 3D effect */}
                     <motion.div
                       className="relative mx-auto mb-8"
                       whileHover={{ 
@@ -539,7 +539,7 @@ const HomePage: React.FC = () => {
                       style={{ perspective: 1000 }}
                     >
                       <motion.div 
-                        className={`h-40 w-40 mx-auto rounded-3xl bg-gradient-to-r ${nft.gradient} flex items-center justify-center text-6xl shadow-2xl relative`}
+                        className={`h-40 w-40 mx-auto rounded-3xl bg-gradient-to-r ${tier.gradient} flex items-center justify-center text-6xl shadow-2xl relative`}
                         animate={{
                           boxShadow: [
                             `0 10px 25px -5px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)`,
@@ -564,7 +564,7 @@ const HomePage: React.FC = () => {
                             ease: "easeInOut"
                           }}
                         >
-                          {nft.icon}
+                          {tier.icon}
                         </motion.span>
                         
                         {/* Floating particles */}
@@ -594,24 +594,24 @@ const HomePage: React.FC = () => {
                     </motion.div>
 
                     <h3 className="text-2xl font-bold text-center text-gray-900 mb-6 group-hover:text-purple-600 transition-colors duration-300">
-                      {nft.name}
+                      {tier.name}
                     </h3>
                     
                     <div className="space-y-4">
                       <div className="p-4 bg-white/50 rounded-2xl backdrop-blur-sm">
                         <span className="font-semibold text-purple-600 block mb-2">📋 Requirement:</span>
-                        <p className="text-gray-700">{nft.requirement}</p>
+                        <p className="text-gray-700">{tier.requirement}</p>
                       </div>
                       
                       <div className="p-4 bg-white/50 rounded-2xl backdrop-blur-sm">
                         <span className="font-semibold text-green-600 block mb-2">🚀 Unlocks:</span>
-                        <p className="text-gray-700">{nft.unlocks}</p>
+                        <p className="text-gray-700">{tier.unlocks}</p>
                       </div>
                     </div>
 
                     {/* Action button */}
                     <motion.button
-                      className={`w-full mt-6 py-3 px-6 bg-gradient-to-r ${nft.gradient} text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300`}
+                      className={`w-full mt-6 py-3 px-6 bg-gradient-to-r ${tier.gradient} text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -691,7 +691,7 @@ const HomePage: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              Growing network of prestigious institutions pioneering the future of verified academic achievements
+              Growing network of trusted partners pioneering the future of verified task rewards.
             </motion.p>
           </motion.div>
 
@@ -717,18 +717,7 @@ const HomePage: React.FC = () => {
                   }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  NFT Hub
-                </motion.div>
-
-                {/* Connection lines and university nodes */}
-                {partners.map((partner, index) => {
-                  const angle = (360 / partners.length) * index;
-                  const radius = 200;
-                  const x = Math.cos((angle * Math.PI) / 180) * radius;
-                  const y = Math.sin((angle * Math.PI) / 180) * radius;
-                  
-                  return (
-                    <div key={partner}>
+                    Rewards Hub
                       {/* Connection line */}
                       <motion.div
                         className="absolute w-px bg-gradient-to-r from-purple-300 to-transparent origin-center"
@@ -816,7 +805,7 @@ const HomePage: React.FC = () => {
                     </span>
                     <span className="flex items-center">
                       <span className="text-purple-500 mr-1">⚡</span>
-                      {Math.floor(Math.random() * 500) + 100} NFTs
+                      {Math.floor(Math.random() * 500) + 100} Rewards
                     </span>
                   </div>
 
@@ -943,8 +932,8 @@ const HomePage: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              Join thousands of students already revolutionizing academic achievement with blockchain-verified NFTs. 
-              Your journey to exclusive opportunities starts here.
+              Join thousands of learners already earning task rewards with Stellar Soroban verification. 
+              Your journey to verified incentives starts here.
             </motion.p>
 
             <motion.div 

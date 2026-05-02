@@ -14,14 +14,14 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${token}`;
 
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'noreply@future-me.app',
+    from: process.env.SMTP_FROM || 'noreply@vegetables-before-candy.app',
     to: email,
-    subject: 'Verify Your University Email - future me',
+    subject: 'Verify Your Email - vegetables-before-candy',
     html: `
       <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
-        <h2 style="color: #4F46E5;">Welcome to future me!</h2>
-        <p>Thank you for joining our cross-university academic achievement platform.</p>
-        <p>Please verify your university email address by clicking the button below:</p>
+        <h2 style="color: #4F46E5;">Welcome to vegetables-before-candy!</h2>
+        <p>Thank you for joining our task-reward platform.</p>
+        <p>Please verify your email address by clicking the button below:</p>
         <div style="text-align: center; margin: 30px 0;">
           <a href="${verificationUrl}" 
              style="background-color: #4F46E5; color: white; padding: 12px 30px; 
@@ -47,20 +47,19 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   }
 };
 
-export const sendAchievementApprovalEmail = async (email: string, achievementTitle: string, nftType: string) => {
+export const sendTaskApprovalEmail = async (email: string, taskTitle: string) => {
   const mailOptions = {
-    from: process.env.SMTP_FROM || 'noreply@future-me.app',
+    from: process.env.SMTP_FROM || 'noreply@vegetables-before-candy.app',
     to: email,
-    subject: 'Achievement Approved - NFT Ready to Mint!',
+    subject: 'Task Completed - Reward Ready to Claim!',
     html: `
       <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
-        <h2 style="color: #10B981;">🎉 Achievement Approved!</h2>
-        <p>Congratulations! Your achievement has been verified and approved:</p>
+        <h2 style="color: #10B981;">🎉 Task Completed!</h2>
+        <p>Congratulations! Your task has been verified and your reward is ready to claim:</p>
         <div style="background-color: #F3F4F6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-          <h3 style="margin: 0; color: #374151;">${achievementTitle}</h3>
-          <p style="margin: 10px 0 0 0; color: #6B7280;">NFT Type: ${nftType}</p>
+          <h3 style="margin: 0; color: #374151;">${taskTitle}</h3>
         </div>
-        <p>You can now mint your exclusive NFT and unlock premium opportunities!</p>
+        <p>Your reward is now available in your dashboard. Redeem it securely through Stellar Soroban.</p>
         <div style="text-align: center; margin: 30px 0;">
           <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard" 
              style="background-color: #10B981; color: white; padding: 12px 30px; 
@@ -74,8 +73,8 @@ export const sendAchievementApprovalEmail = async (email: string, achievementTit
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`Achievement approval email sent to ${email}`);
+    console.log(`Task approval email sent to ${email}`);
   } catch (error) {
-    console.error('Failed to send achievement approval email:', error);
+    console.error('Failed to send task approval email:', error);
   }
 };

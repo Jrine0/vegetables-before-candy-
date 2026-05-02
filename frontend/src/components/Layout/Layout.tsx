@@ -11,8 +11,8 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
-  title = 'future me',
-  description = 'Cross-University Academic Achievement Marketplace' 
+  title = 'vegetables-before-candy',
+  description = 'Behavior incentive platform with Stellar Soroban task and reward flow' 
 }) => {
   return (
     <>

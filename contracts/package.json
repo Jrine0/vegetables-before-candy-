@@ -1,18 +1,18 @@
 {
-  "name": "future-me-aptos-move",
+  "name": "vegetables-before-candy-soroban",
   "version": "1.0.0",
-  "description": "Aptos Move smart contracts for future me",
+  "description": "Stellar Soroban smart contracts for vegetables-before-candy",
   "scripts": {
-    "aptos:init": "aptos init --network testnet",
-    "compile": "aptos move compile --named-addresses future_me=0x0",
-    "test": "aptos move test --named-addresses future_me=0x0",
-    "publish:testnet": "aptos move publish --named-addresses future_me=default --profile default",
-    "publish:mainnet": "aptos move publish --named-addresses future_me=default --profile default --assume-yes"
+    "build": "soroban contract build",
+    "test": "soroban contract test",
+    "deploy:testnet": "soroban contract deploy --network testnet",
+    "deploy:mainnet": "soroban contract deploy --network mainnet"
   },
   "dependencies": {
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4"
+    "@types/node": "^20.10.4",
+    "soroban-cli": "^21.0.0"
   }
 }

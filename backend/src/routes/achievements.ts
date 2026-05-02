@@ -262,20 +262,8 @@ router.put('/:id/verify', authenticateToken, async (req: any, res) => {
         }
       );
 
-      await prisma.nFTToken.create({
-        data: {
-          userId: achievement.userId,
-          achievementId: achievement.id,
-          tokenId: `${Date.now()}-${achievement.userId}`,
-          contractAddress: process.env.APTOS_MODULE_ADDRESS || process.env.APTOS_RESOURCE_ACCOUNT || 'aptos_move_module',
-          blockchain: 'aptos',
-          nftType,
-          metadataUri: `${process.env.API_URL}/api/nfts/metadata/${achievement.id}`,
-          evolutionPoints,
-          level: 1,
-          rarity: 'common'
-        }
-      });
+      // Note: No NFT creation in task-based system
+      // Achievements are now separate from blockchain rewards
     }
 
     res.json(updatedAchievement);

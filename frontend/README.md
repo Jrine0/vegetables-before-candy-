@@ -1,21 +1,21 @@
-# future me frontend
+# vegetables-before-candy frontend
 
-Next.js frontend for future me, an Aptos-native academic achievement platform.
+Next.js frontend for vegetables-before-candy, a Stellar Soroban behavior-incentive platform.
 
 ## Core capabilities
 
-- University account onboarding and verification UX
-- Achievement submission and validation flows
-- Aptos wallet connection (Petra and Martian)
-- Soul-bound NFT minting UX backed by Aptos transactions
-- On-chain ownership-gated opportunity access
+- User account onboarding and verification UX
+- Task creation and completion flows
+- Stellar wallet connection (Freighter)
+- Task submission and reward claiming UX backed by Soroban transactions
+- On-chain reward escrow and verification
 
 ## Stack
 
 - Next.js 14 + TypeScript
 - Tailwind CSS
 - React Query + Context APIs
-- Aptos TypeScript SDK integration
+- Stellar SDK integration
 
 ## Local development
 
@@ -28,17 +28,16 @@ npm run dev
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_APP_NAME=future me
-NEXT_PUBLIC_APTOS_NETWORK=testnet
-NEXT_PUBLIC_APTOS_MODULE_ADDRESS=0x...
-NEXT_PUBLIC_APTOS_ACCESS_MODULE_ADDRESS=0x...
+NEXT_PUBLIC_APP_NAME=vegetables-before-candy
+NEXT_PUBLIC_STELLAR_NETWORK=testnet
+NEXT_PUBLIC_SOROBAN_CONTRACT_ID=C...
 ```
 
 ## Wallet behavior
 
-- Connects to Petra or Martian if installed
-- Persists selected wallet locally
-- Displays active Aptos network label in the UI
+- Connects to Freighter if installed
+- Persists wallet connection locally
+- Displays active Stellar network label in the UI
 
 ## Build commands
 

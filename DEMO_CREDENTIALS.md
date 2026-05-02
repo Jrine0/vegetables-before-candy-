@@ -1,30 +1,27 @@
-# 🎓 Demo Login Credentials
+# � Demo Login Credentials
 
 ## Available Demo Users
 
 Use any of these email addresses to login (no password required):
 
 ### User 1: John Doe
-- **Email:** `demo@student.edu`
-- **University:** Harvard University
-- **Achievements:** 3 verified achievements (GPA, Research, Leadership)
+- **Email:** `demo@user.com`
+- **Tasks:** 3 active tasks (exercise, study, habit tracking)
 
-### User 2: Jane Smith  
-- **Email:** `demo2@student.edu`
-- **University:** Stanford University
-- **Achievements:** 3 verified achievements (GPA, Research, Leadership)
+### User 2: Jane Smith
+- **Email:** `demo2@user.com`
+- **Tasks:** 3 active tasks (exercise, study, habit tracking)
 
 ### User 3: Alex Johnson
-- **Email:** `demo3@student.edu` 
-- **University:** MIT
-- **Achievements:** 3 verified achievements (GPA, Research, Leadership)
+- **Email:** `demo3@user.com`
+- **Tasks:** 3 active tasks (exercise, study, habit tracking)
 
 ## Quick Start
 
 1. **Frontend:** http://localhost:3000
 2. **Backend:** http://localhost:3001
 3. **Login:** Click "Sign In" and enter any demo email above
-4. **Features:** All winning features are active with real-time updates!
+4. **Features:** All task-reward features are active with Soroban enforcement!
 
 ## Key Features Available
 

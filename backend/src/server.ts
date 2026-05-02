@@ -10,10 +10,9 @@ import { PrismaClient } from '@prisma/client';
 import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import achievementRoutes from './routes/achievements';
-import nftRoutes from './routes/nfts';
+import taskRoutes from './routes/tasks';
 import opportunityRoutes from './routes/opportunities';
 import socialRoutes from './routes/social';
-import aptosRoutes from './routes/aptos';
 import analyticsRoutes from './routes/analytics';
 
 dotenv.config();
@@ -48,10 +47,9 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/achievements', achievementRoutes);
-app.use('/api/nfts', nftRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api/opportunities', opportunityRoutes);
 app.use('/api/social', socialRoutes);
-app.use('/api/aptos', aptosRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 app.get('/api/health', (req, res) => {

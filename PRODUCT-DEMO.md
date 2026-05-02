@@ -1,28 +1,27 @@
 # Product Demo Guide
 
-future me demo flow focused on Aptos on-chain verification.
+vegetables-before-candy demo flow focused on Stellar Soroban task-reward enforcement.
 
 ## Demo flow (8 minutes)
 
-1. Register a student account with a supported university domain.
-2. Upload a GPA, research, or leadership achievement with proof.
-3. Verify the achievement through admin workflow.
-4. Connect an Aptos wallet (Petra or Martian).
-5. Mint the soul-bound NFT on Aptos.
-6. Request a gated opportunity and show successful on-chain access assertion.
-7. Open transaction in Aptos explorer and show emitted events.
+1. Register a user account.
+2. Create a task with reward escrow (e.g., "Complete daily exercise").
+3. Submit task completion proof.
+4. Admin/oracle verifies the task completion.
+5. Claim the escrowed reward on Stellar.
+6. Show the enforced task→verification→reward flow in Soroban explorer.
 
 ## Talking points
 
-- Credentials are verified before minting and cannot be transferred.
-- Opportunity access is decided by on-chain ownership checks, not UI-only checks.
-- Move modules are capability-based and emit auditable events.
-- The architecture supports additional universities and achievement categories.
+- Rewards are escrowed on-chain until task verification
+- No bypassing the completion→verification→reward sequence
+- Soroban contract enforces behavior incentives transparently
+- The architecture supports any task type (fitness, study, habits, etc.)
 
 ## Environment checklist
 
 - Backend running on `http://localhost:3001`
 - Frontend running on `http://localhost:3000`
-- Aptos network configured (`testnet` or `mainnet`)
-- `APTOS_ADMIN_PRIVATE_KEY`, `APTOS_MODULE_ADDRESS`, and `APTOS_ACCESS_MODULE_ADDRESS` configured
-- Petra or Martian wallet installed
+- Stellar network configured (`testnet` or `mainnet`)
+- `STELLAR_ADMIN_PRIVATE_KEY`, `SOROBAN_CONTRACT_ID` configured
+- Freighter wallet installed

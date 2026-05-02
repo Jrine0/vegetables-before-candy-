@@ -1,53 +1,63 @@
-# future me
+# vegetables-before-candy
 
-future me is an Aptos-native academic achievement platform where verified student milestones are minted as soul-bound Move NFTs and used for on-chain opportunity access control.
+A Stellar Soroban-based behavior-incentive platform that enforces the principle: **complete tasks before claiming rewards**. Users create tasks with escrowed rewards, submit completion proof, get oracle verification, then claim their rewards - all secured on-chain.
 
 ## Overview
 
 The platform combines:
-- Aptos Move smart contracts for achievement NFTs and gated access checks
-- A Node.js + Express + TypeScript backend with JWT auth and university email workflows
-- A Next.js frontend with Aptos wallet integration (Petra and Martian)
+- Stellar Soroban smart contracts for task management and reward escrow
+- A Node.js + Express + TypeScript backend with JWT auth and task verification workflows
+- A Next.js frontend with Stellar wallet integration (Freighter)
 
-## Aptos Architecture
+## Core Concept
 
-### Move modules
-- `achievement_nft.move`
-	- Mints soul-bound achievement NFTs (`gpa_guardian`, `research_rockstar`, `leadership_legend`)
-	- Stores ownership indices for fast lookup
-	- Emits mint and verification events
-	- Enforces non-transferability at contract level (`transfer_soulbound` always aborts)
-- `access_control.move`
-	- Verifies required achievement types on-chain
-	- Emits access verification events
-	- Aborts when access is denied
+**Vegetables Before Candy** = Task Completion → Verification → Reward
 
-### Security model
-- Capability-based controls (`AdminCap`, `MintCap`, `AccessAdminCap`)
-- Explicit supported-type validation before mint and access assertion
-- Resource-account aware registry storage pattern
+1. **Create Task**: User defines a task with reward amount (escrowed in contract)
+2. **Submit Completion**: User marks task as complete
+3. **Oracle Verification**: Backend/oracle verifies completion
+4. **Claim Reward**: User claims escrowed reward
 
-## Backend responsibilities
+This enforces behavioral incentives on-chain, preventing reward abuse and ensuring task completion.
 
-- JWT authentication and email verification
-- Achievement proof upload and validation workflows
-- Aptos transaction submission for mint and access assertions
-- Aptos ownership checks and event retrieval
+## Soroban Architecture
 
-Primary Aptos backend route: `/api/aptos`
+### Smart Contract (`vegetable-before-candy-contract`)
+- **Task Storage**: User → Vec<Task> mapping with status tracking
+- **Escrow System**: Rewards locked until verification
+- **Status Flow**: Created → Submitted → Verified → Claimed
+- **Access Control**: Only task owner can interact with their tasks
 
-## Frontend responsibilities
+### Security Model
+- No double-claiming (status enforced)
+- No bypassing verification (on-chain checks)
+- Integer-safe accounting for all reward values
+- Admin/oracle verification required
 
-- Connect Aptos wallets (Petra or Martian)
-- Trigger Aptos-backed minting flows
-- Present ownership-gated opportunity UX
-- Display Aptos network/account status in navigation
+## Backend Responsibilities
 
-## Local setup
+- JWT authentication and user management
+- Task creation and status tracking
+- Soroban transaction submission for all operations
+- Oracle verification workflows (AI/manual)
+- Reward escrow management
+
+Primary Soroban backend route: `/api/tasks`
+
+## Frontend Responsibilities
+
+- Connect Stellar wallets (Freighter)
+- Task creation and management UI
+- Completion submission flows
+- Reward claiming interface
+- Display Stellar network/account status
+
+## Local Setup
 
 ### Prerequisites
 - Node.js 18+
-- Aptos CLI
+- Rust + Soroban CLI
+- Stellar account with XLM for fees
 
 ### Install
 ```bash
@@ -55,29 +65,28 @@ npm install
 npm run install:all
 ```
 
-### Configure backend
-Create `backend/.env` with at least:
+### Configure Backend
+Create `backend/.env` with:
 ```env
 PORT=3001
 JWT_SECRET=replace-with-secure-secret
 FRONTEND_URL=http://localhost:3000
 
-APTOS_NETWORK=testnet
-APTOS_FULLNODE_URL=https://api.testnet.aptoslabs.com/v1
-APTOS_FAUCET_URL=https://faucet.testnet.aptoslabs.com
-APTOS_ADMIN_PRIVATE_KEY=0x...
-APTOS_MODULE_ADDRESS=0x...
-APTOS_ACCESS_MODULE_ADDRESS=0x...
+STELLAR_NETWORK=testnet
+STELLAR_RPC_URL=https://soroban-testnet.stellar.org
+STELLAR_HORIZON_URL=https://horizon-testnet.stellar.org
+STELLAR_ADMIN_PRIVATE_KEY=S...
+SOROBAN_CONTRACT_ID=C...
+STELLAR_TOKEN_ID=native  # or contract ID for custom token
 ```
 
-### Configure frontend
+### Configure Frontend
 Create `frontend/.env.local`:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_APP_NAME=future me
-NEXT_PUBLIC_APTOS_NETWORK=testnet
-NEXT_PUBLIC_APTOS_MODULE_ADDRESS=0x...
-NEXT_PUBLIC_APTOS_ACCESS_MODULE_ADDRESS=0x...
+NEXT_PUBLIC_APP_NAME=vegetables-before-candy
+NEXT_PUBLIC_STELLAR_NETWORK=testnet
+NEXT_PUBLIC_SOROBAN_CONTRACT_ID=C...
 ```
 
 ### Database
@@ -85,6 +94,15 @@ NEXT_PUBLIC_APTOS_ACCESS_MODULE_ADDRESS=0x...
 cd backend
 npx prisma generate
 npx prisma db push
+```
+
+### Deploy Contract
+```bash
+cd contracts
+soroban contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/vegetable_before_candy_contract.wasm \
+  --source S... \
+  --network testnet
 ```
 
 ### Run
@@ -95,34 +113,81 @@ npm run dev
 Frontend: http://localhost:3000
 Backend: http://localhost:3001
 
-## Smart contract workflow
+## Smart Contract Workflow
 
 From `contracts/`:
-```bash
-npm run compile
-npm run test
-npm run publish:testnet
-```
 
-## Achievement types
+1. **Initialize**: Set admin and token contract
+2. **Create Task**: User escrows reward, gets task ID
+3. **Submit Completion**: User marks task submitted
+4. **Verify Task**: Admin verifies completion
+5. **Claim Reward**: User claims escrowed reward
 
-- GPA-based NFT: `gpa_guardian`
-- Research-based NFT: `research_rockstar`
-- Leadership-based NFT: `leadership_legend`
+## Task Examples
 
-## Opportunity gating flow
+- **Fitness**: "Run 5km" → escrow 10 XLM → submit GPS proof → AI verify → claim reward
+- **Study**: "Complete math homework" → escrow 5 XLM → submit photo → manual verify → claim
+- **Habits**: "Meditate daily for week" → escrow 20 XLM → submit streak proof → oracle verify → claim
 
-1. User submits verified achievement
-2. Backend mints Aptos soul-bound NFT via `achievement_nft::mint_soulbound`
-3. User requests opportunity access
-4. Backend calls `access_control::assert_access`
-5. Access is granted only when on-chain ownership requirements are satisfied
+## API Endpoints
 
-## Supported university domains
+### Tasks
+- `GET /api/tasks` - Get user's tasks
+- `POST /api/tasks` - Create new task
+- `POST /api/tasks/:id/submit` - Submit completion
+- `POST /api/tasks/:id/verify` - Verify task (admin)
+- `POST /api/tasks/:id/claim` - Claim reward
 
-- @emich.edu
-- @eastern.edu
-- @tesu.edu
-- @oakland.edu
-- @vt.edu
+### Auth
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+
+## Security Features
+
+- **No Reward Abuse**: Escrow prevents claiming without verification
+- **No Double Claims**: Status tracking prevents reuse
+- **Oracle Verification**: Human/AI verification required
+- **On-Chain Transparency**: All actions recorded immutably
+
+## Extensibility
+
+The platform is designed for various behavior types:
+- Academic achievements
+- Fitness goals
+- Professional development
+- Personal habits
+- Team challenges
+- Community contributions
+
+## Technology Stack
+
+- **Blockchain**: Pure Stellar Soroban (Rust) - 100% native implementation
+- **Backend**: Node.js, Express, TypeScript, Prisma
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Database**: SQLite (development) / PostgreSQL (production)
+- **Wallet**: Freighter (Stellar)
+- **AI**: OpenAI for verification assistance
+
+## Task types
+
+- Fitness tasks: `exercise_champion`
+- Study tasks: `study_streak`
+- Habit tasks: `habit_hero`
+
+## Task enforcement flow
+
+1. User creates task with escrowed reward
+2. User submits task completion proof
+3. Oracle verifies completion
+4. User claims escrowed reward via Soroban contract
+5. Reward is released only after successful verification
+
+## Supported task categories
+
+- Fitness & health
+- Academic study
+- Personal development
+- Professional goals
+- Community service
+- Creative projects
 

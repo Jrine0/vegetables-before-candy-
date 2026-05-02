@@ -46,7 +46,7 @@ app.get('/health', (req, res) => {
 // Basic API endpoint
 app.get('/api', (req, res) => {
   res.json({ 
-    message: 'future me API',
+    message: 'vegetables-before-candy API',
     version: '1.0.0',
     status: 'running'
   });

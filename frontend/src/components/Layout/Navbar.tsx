@@ -5,7 +5,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, BellIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../../contexts/AuthContext';
 import { useWallet } from '../../contexts/WalletContext';
-import AptosWalletButton from '../Wallet/AptosWalletButton';
+import StellarWalletButton from '../Wallet/StellarWalletButton';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link href="/" className="flex-shrink-0 flex items-center">
-                <span className="text-2xl font-bold text-primary-600">🎓 future me</span>
+                <span className="text-2xl font-bold text-primary-600">🥕 vegetables-before-candy</span>
               </Link>
             </div>
             <div className="flex items-center space-x-4">
@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
               <div className="flex">
                 <div className="flex-shrink-0 flex items-center">
                   <Link href="/dashboard" className="flex items-center">
-                    <span className="text-2xl font-bold text-primary-600">🎓 future me</span>
+                    <span className="text-2xl font-bold text-primary-600">🥕 vegetables-before-candy</span>
                   </Link>
                 </div>
                 <div className="hidden md:ml-6 md:flex md:space-x-8">
@@ -90,7 +90,7 @@ const Navbar: React.FC = () => {
                   </div>
                 )}
                 
-                <AptosWalletButton />
+                <StellarWalletButton />
                 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">

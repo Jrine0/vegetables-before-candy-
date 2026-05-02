@@ -88,17 +88,19 @@ export const achievementAPI = USE_MOCK_API ? {
   }),
 };
 
-// NFT API
-export const nftAPI = USE_MOCK_API ? {
-  getAll: mockNFTAPI.getUserNFTs,
-  getUserNFTs: mockNFTAPI.getUserNFTs,
-  mint: (id: string, data: any) => Promise.resolve({ data: { success: true, message: 'NFT minting available after backend deployment' } }),
-  getMetadata: (achievementId: string) => Promise.resolve({ data: { name: 'Demo NFT', description: 'Mock NFT metadata' } }),
+// Task API
+export const taskAPI = USE_MOCK_API ? {
+  getAll: () => Promise.resolve({ data: [] }),
+  create: (data: any) => Promise.resolve({ data: { success: true, message: 'Task creation available after backend deployment' } }),
+  submit: (id: string) => Promise.resolve({ data: { success: true, message: 'Task submission available after backend deployment' } }),
+  verify: (id: string) => Promise.resolve({ data: { success: true, message: 'Task verification available after backend deployment' } }),
+  claim: (id: string) => Promise.resolve({ data: { success: true, message: 'Reward claiming available after backend deployment' } }),
 } : {
-  getAll: () => api.get('/nfts'),
-  getUserNFTs: () => api.get('/nfts'),
-  mint: (id: string, data: any) => api.post(`/nfts/${id}/mint`, data),
-  getMetadata: (achievementId: string) => api.get(`/nfts/metadata/${achievementId}`),
+  getAll: () => api.get('/tasks'),
+  create: (data: any) => api.post('/tasks', data),
+  submit: (id: string) => api.post(`/tasks/${id}/submit`),
+  verify: (id: string) => api.post(`/tasks/${id}/verify`),
+  claim: (id: string) => api.post(`/tasks/${id}/claim`),
 };
 
 // Opportunity API

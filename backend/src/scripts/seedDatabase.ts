@@ -162,22 +162,20 @@ async function main() {
       if (achievement.verified) {
         const rarities = ['common', 'rare', 'epic', 'legendary', 'mythic'];
         const rarity = rarities[Math.floor(Math.random() * rarities.length)];
-        const level = Math.floor(Math.random() * 5) + 1;
-        
-        await prisma.nFTToken.create({
-          data: {
-            userId: user.id,
-            achievementId: achievement.id,
-            tokenId: `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            contractAddress: process.env.APTOS_MODULE_ADDRESS || process.env.APTOS_RESOURCE_ACCOUNT || 'aptos_move_module',
-            blockchain: 'aptos',
-            nftType: `${type}_${rarity}`,
-            metadataUri: `${process.env.API_URL}/api/nfts/metadata/${achievement.id}`,
-            minted: true,
-            mintedAt: new Date(),
-            level,
-            rarity,
-            evolutionPoints: Math.floor(Math.random() * 1000) + level * 200,
+        // Create sample tasks for the user
+        const taskTypes = ['exercise', 'study', 'meditate', 'read', 'code'];
+        for (let i = 0; i < 3; i++) {
+          const taskType = taskTypes[Math.floor(Math.random() * taskTypes.length)];
+          await prisma.task.create({
+            data: {
+              userId: user.id,
+              description: `Complete ${taskType} task ${i + 1}`,
+              rewardAmount: Math.floor(Math.random() * 100) + 10, // 10-110 XLM
+              status: ['created', 'submitted', 'verified', 'claimed'][Math.floor(Math.random() * 4)],
+              walletAddress: `G${Math.random().toString(36).substr(2, 56)}`, // Mock Stellar address
+            }
+          });
+        }
             isComposite: false
           }
         });

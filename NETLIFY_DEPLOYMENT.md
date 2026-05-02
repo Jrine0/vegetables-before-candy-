@@ -1,6 +1,6 @@
 # 🚀 Netlify Deployment Guide
 
-This guide will help you deploy future me to Netlify.
+This guide will help you deploy vegetables-before-candy to Netlify.
 
 ## 📋 Prerequisites
 
@@ -43,7 +43,7 @@ The project is already configured for Netlify deployment with:
    Add these in Netlify dashboard if needed:
    ```
    NEXT_PUBLIC_API_URL=https://your-backend-url.com
-   NEXT_PUBLIC_APTOS_NETWORK=testnet
+   NEXT_PUBLIC_STELLAR_NETWORK=testnet
    ```
 
 5. **Deploy**

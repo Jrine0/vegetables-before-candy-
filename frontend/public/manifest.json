@@ -1,7 +1,7 @@
 {
-  "name": "future me - Aptos Achievement Platform",
-  "short_name": "future me",
-  "description": "Transform academic achievements into Aptos soul-bound NFTs with on-chain opportunity access.",
+  "name": "vegetables-before-candy - Stellar Task Reward Platform",
+  "short_name": "vegetables-before-candy",
+  "description": "Stellar Soroban task reward platform for verified task completion and secure reward claim workflows.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F172A",

@@ -1,13 +1,12 @@
-interface AptosBrowserWallet {
-  connect: () => Promise<any>;
-  disconnect?: () => Promise<void>;
-  account?: () => Promise<{ address?: string; publicKey?: string }>;
-  network?: () => Promise<{ name?: string }>;
-  isConnected?: () => Promise<boolean>;
-  onAccountChange?: (handler: (account: { address?: string } | null) => void) => void;
+interface StellarBrowserWallet {
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  getPublicKey: () => Promise<string>;
+  getNetwork: () => Promise<string>;
+  isConnected: () => Promise<boolean>;
+  signTransaction: (tx: string) => Promise<string>;
 }
 
 interface Window {
-  aptos?: AptosBrowserWallet;
-  martian?: AptosBrowserWallet;
+  freighter?: StellarBrowserWallet;
 }

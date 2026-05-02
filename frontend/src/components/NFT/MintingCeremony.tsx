@@ -233,7 +233,7 @@ const MintingCeremony: React.FC<MintingCeremonyProps> = ({
   };
 
   const shareAchievement = () => {
-    const shareText = `🎉 I just minted a ${nft.rarity} level ${nft.level} NFT for my "${achievement.title}" achievement on future me! 🚀`;
+    const shareText = `🎉 I just completed a reward-verified task for "${achievement.title}" on vegetables-before-candy! 🚀`;
     
     if (typeof window !== 'undefined' && navigator.share) {
       navigator.share({

@@ -148,7 +148,7 @@ const SocialIntegrations: React.FC = () => {
         contributions: {
           total: 2847,
           streak: 127,
-          topProjects: ['ml-research-toolkit', 'future-me-platform', 'ai-paper-generator']
+          topProjects: ['ml-research-toolkit', 'vegetables-before-candy-platform', 'ai-paper-generator']
         }
       };
 

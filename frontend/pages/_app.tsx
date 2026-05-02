@@ -71,9 +71,9 @@ export default function App({ Component, pageProps }: AppProps) {
           name="viewport"
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"
         />
-        <meta name="description" content="Transform academic achievements into Aptos soul-bound NFTs. Unlock opportunities with on-chain verification and AI-assisted workflows." />
-        <meta name="keywords" content="academic,nft,achievements,university,blockchain,careers,opportunities" />
-        <title>future me - Cross-University Achievement Platform</title>
+        <meta name="description" content="Stellar Soroban task reward platform for verified task completion and secure reward claim workflows." />
+        <meta name="keywords" content="Stellar,Soroban,task rewards,verification,achievement,incentives,learning" />
+        <title>vegetables-before-candy - Stellar Task Rewards</title>
 
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/favicon.ico" />
@@ -86,23 +86,23 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="future me" />
-        <meta name="application-name" content="future me" />
+        <meta name="apple-mobile-web-app-title" content="vegetables-before-candy" />
+        <meta name="application-name" content="vegetables-before-candy" />
         <meta name="msapplication-TileColor" content="#6366F1" />
         <meta name="msapplication-tap-highlight" content="no" />
 
         {/* Open Graph */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="future me" />
-        <meta property="og:description" content="Transform academic achievements into dynamic NFTs" />
-        <meta property="og:site_name" content="future me" />
-        <meta property="og:url" content="https://future-me.app" />
+        <meta property="og:title" content="vegetables-before-candy" />
+        <meta property="og:description" content="Stellar Soroban task reward platform for verified task completion and secure reward claim workflows." />
+        <meta property="og:site_name" content="vegetables-before-candy" />
+        <meta property="og:url" content="https://vegetables-before-candy.app" />
         <meta property="og:image" content="/icons/icon-512x512.png" />
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="future me" />
-        <meta name="twitter:description" content="Transform academic achievements into dynamic NFTs" />
+        <meta name="twitter:title" content="vegetables-before-candy" />
+        <meta name="twitter:description" content="Stellar Soroban task reward platform for verified task completion and secure reward claim workflows." />
         <meta name="twitter:image" content="/icons/icon-512x512.png" />
 
         {/* Disable automatic detection and formatting of possible phone numbers */}

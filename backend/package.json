@@ -1,7 +1,7 @@
 {
-  "name": "future-me-backend",
+  "name": "vegetables-before-candy-backend",
   "version": "1.0.0",
-  "description": "Backend API for future me",
+  "description": "Backend API for vegetables-before-candy",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -15,8 +15,8 @@
     "db:migrate": "prisma migrate dev"
   },
   "dependencies": {
-    "@aptos-labs/ts-sdk": "^1.36.0",
     "@prisma/client": "^5.7.1",
+    "@stellar/stellar-sdk": "^11.0.0",
     "@types/socket.io": "^3.0.1",
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
@@ -35,6 +35,7 @@
     "prisma": "^5.7.1",
     "sharp": "^0.33.1",
     "socket.io": "^4.8.1",
+    "soroban-client": "^1.0.0",
     "tesseract.js": "^5.0.4",
     "uuid": "^9.0.1",
     "ws": "^8.18.0"

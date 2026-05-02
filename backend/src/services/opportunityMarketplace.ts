@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { prisma } from '../server';
-import { aptosChainService } from './aptosChain';
 
 export interface OpportunityFilter {
   type?: string;
@@ -271,19 +270,12 @@ export class OpportunityMarketplaceService {
       throw new Error(`You don't meet the requirements: ${matchResult.missingRequirements.join(', ')}`);
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { walletAddress: true }
-    });
-
-    if (!user?.walletAddress) {
-      throw new Error('Aptos wallet is required to apply for gated opportunities');
-    }
-
-    const requiredTypes = JSON.parse(opportunity.requiredNFTs || '[]') as string[];
-    await aptosChainService.assertOpportunityAccess(user.walletAddress, opportunity.id, requiredTypes);
-
-    // Create application
+    // Create application (no blockchain access control in new system)
+    const application = await prisma.opportunityApplication.create({
+      data: {
+        userId,
+        opportunityId,
+        message: applicationData.message,
     const application = await prisma.opportunityApplication.create({
       data: {
         userId,

@@ -1,23 +1,15 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { Keypair } from '@stellar/stellar-sdk';
 import toast from 'react-hot-toast';
 
-type AptosWalletName = 'petra' | 'martian';
-
-type AptosWalletProvider = {
-  connect: () => Promise<any>;
-  disconnect?: () => Promise<void>;
-  account?: () => Promise<{ address?: string; publicKey?: string }>;
-  network?: () => Promise<{ name?: string }>;
-  isConnected?: () => Promise<boolean>;
-  onAccountChange?: (handler: (account: { address?: string } | null) => void) => void;
-};
+type StellarWalletName = 'freighter';
 
 interface WalletContextType {
   account: string | null;
-  walletName: AptosWalletName | null;
+  walletName: StellarWalletName | null;
   networkName: string | null;
   isConnecting: boolean;
-  connectWallet: (preferredWallet?: AptosWalletName) => Promise<void>;
+  connectWallet: (preferredWallet?: StellarWalletName) => Promise<void>;
   disconnectWallet: () => Promise<void>;
 }
 
@@ -35,120 +27,86 @@ interface WalletProviderProps {
   children: ReactNode;
 }
 
-const getWalletProvider = (walletName: AptosWalletName): AptosWalletProvider | null => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  if (walletName === 'petra') {
-    return window.aptos || null;
-  }
-
-  if (walletName === 'martian') {
-    return window.martian || null;
-  }
-
-  return null;
+const isFreighterAvailable = (): boolean => {
+  return typeof window !== 'undefined' && !!(window as any).freighter;
 };
 
 const formatNetwork = (network: string | undefined): string => {
   if (!network) {
-    return 'Aptos';
+    return 'Stellar';
   }
 
   const normalized = network.toLowerCase();
-  if (normalized.includes('mainnet')) return 'Aptos Mainnet';
-  if (normalized.includes('testnet')) return 'Aptos Testnet';
-  if (normalized.includes('devnet')) return 'Aptos Devnet';
-  return `Aptos ${network}`;
+  if (normalized.includes('mainnet')) return 'Stellar Mainnet';
+  if (normalized.includes('testnet')) return 'Stellar Testnet';
+  return `Stellar ${network}`;
 };
 
 export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const [account, setAccount] = useState<string | null>(null);
-  const [walletName, setWalletName] = useState<AptosWalletName | null>(null);
+  const [walletName, setWalletName] = useState<StellarWalletName | null>(null);
   const [networkName, setNetworkName] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
     const checkExistingConnection = async () => {
-      const rememberedWallet = localStorage.getItem('aptos_wallet_name') as AptosWalletName | null;
-      if (!rememberedWallet) return;
+      const rememberedWallet = localStorage.getItem('stellar_wallet_name') as StellarWalletName | null;
+      if (!rememberedWallet || rememberedWallet !== 'freighter') return;
 
-      const provider = getWalletProvider(rememberedWallet);
-      if (!provider) return;
+      if (!isFreighterAvailable()) return;
 
       try {
-        const connected = provider.isConnected ? await provider.isConnected() : false;
+        const freighter = (window as any).freighter;
+        const connected = await freighter.isConnected();
         if (!connected) return;
 
-        const accountInfo = provider.account ? await provider.account() : null;
-        const networkInfo = provider.network ? await provider.network() : null;
+        const publicKey = await freighter.getPublicKey();
+        const network = await freighter.getNetwork();
 
-        if (accountInfo?.address) {
-          setAccount(accountInfo.address);
-          setWalletName(rememberedWallet);
-          setNetworkName(formatNetwork(networkInfo?.name));
+        if (publicKey) {
+          setAccount(publicKey);
+          setWalletName('freighter');
+          setNetworkName(formatNetwork(network));
         }
       } catch (error) {
-        console.error('Failed to restore Aptos wallet connection:', error);
+        console.error('Failed to restore Stellar wallet connection:', error);
       }
     };
 
     checkExistingConnection();
   }, []);
 
-  const connectWallet = async (preferredWallet?: AptosWalletName) => {
-    const candidateWallets: AptosWalletName[] = preferredWallet
-      ? [preferredWallet]
-      : ['petra', 'martian'];
-
+  const connectWallet = async (preferredWallet?: StellarWalletName) => {
     setIsConnecting(true);
 
     try {
-      let selectedWallet: AptosWalletName | null = null;
-      let provider: AptosWalletProvider | null = null;
-
-      for (const wallet of candidateWallets) {
-        const maybeProvider = getWalletProvider(wallet);
-        if (maybeProvider) {
-          selectedWallet = wallet;
-          provider = maybeProvider;
-          break;
-        }
-      }
-
-      if (!provider || !selectedWallet) {
-        toast.error('Install Petra or Martian wallet to continue');
+      if (!isFreighterAvailable()) {
+        toast.error('Install Freighter wallet to continue');
         return;
       }
 
-      await provider.connect();
-      const accountInfo = provider.account ? await provider.account() : null;
-      const networkInfo = provider.network ? await provider.network() : null;
+      const freighter = (window as any).freighter;
 
-      if (!accountInfo?.address) {
-        throw new Error('Wallet connected but no Aptos account was returned');
+      // Connect to wallet
+      await freighter.connect();
+
+      const publicKey = await freighter.getPublicKey();
+      const network = await freighter.getNetwork();
+
+      if (!publicKey) {
+        throw new Error('Wallet connected but no Stellar account was returned');
       }
 
-      setAccount(accountInfo.address);
-      setWalletName(selectedWallet);
-      setNetworkName(formatNetwork(networkInfo?.name));
-      localStorage.setItem('aptos_wallet_name', selectedWallet);
+      setAccount(publicKey);
+      setWalletName('freighter');
+      setNetworkName(formatNetwork(network));
+      localStorage.setItem('stellar_wallet_name', 'freighter');
 
-      toast.success(`Connected ${selectedWallet === 'petra' ? 'Petra' : 'Martian'} wallet`);
+      toast.success('Connected Freighter wallet');
 
-      if (provider.onAccountChange) {
-        provider.onAccountChange((nextAccount) => {
-          if (!nextAccount?.address) {
-            setAccount(null);
-            return;
-          }
-          setAccount(nextAccount.address);
-        });
-      }
     } catch (error: any) {
-      console.error('Failed to connect Aptos wallet:', error);
-      toast.error(error?.message || 'Failed to connect Aptos wallet');
+      console.error('Failed to connect Stellar wallet:', error);
+      toast.error(error?.message || 'Failed to connect Stellar wallet');
     } finally {
       setIsConnecting(false);
     }
@@ -156,20 +114,18 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
   const disconnectWallet = async () => {
     try {
-      if (walletName) {
-        const provider = getWalletProvider(walletName);
-        if (provider?.disconnect) {
-          await provider.disconnect();
-        }
+      if (walletName === 'freighter' && isFreighterAvailable()) {
+        const freighter = (window as any).freighter;
+        await freighter.disconnect();
       }
     } catch (error) {
       console.error('Failed to disconnect wallet gracefully:', error);
     } finally {
-      localStorage.removeItem('aptos_wallet_name');
+      localStorage.removeItem('stellar_wallet_name');
       setAccount(null);
       setWalletName(null);
       setNetworkName(null);
-      toast.success('Aptos wallet disconnected');
+      toast.success('Stellar wallet disconnected');
     }
   };
 
