@@ -1,6 +1,7 @@
 #!/bin/bash
 
-echo "🎓 Setting up Academic NFT Marketplace..."
+echo "🎓 Setting up vegetables-bofore-candy Marketplace..."
+
 
 # Check if Node.js is installed
 if ! command -v node &> /dev/null; then
